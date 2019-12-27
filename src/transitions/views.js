@@ -31,16 +31,18 @@ const TransitionViews = ({ children, style }) => {
   }, [to])
 
   useEffect(() => {
-    const currentMode = currentLocation.mode || mode
-    if (currentMode === 'successive') {
-      if (views.filter(view => view).length) {
-        dispatch({ type: 'ADD_QUEUE', view: children })
-      } else {
+    if (currentLocation.key) {
+      const currentMode = currentLocation.mode || mode
+      if (currentMode === 'successive') {
+        if (views.filter(view => view).length) {
+          dispatch({ type: 'ADD_QUEUE', view: children })
+        } else {
+          dispatch({ type: 'ADD_VIEW_DIRECTLY', view: children })
+        }
+      }
+      if (currentMode === 'immediate') {
         dispatch({ type: 'ADD_VIEW_DIRECTLY', view: children })
       }
-    }
-    if (currentMode === 'immediate') {
-      dispatch({ type: 'ADD_VIEW_DIRECTLY', view: children })
     }
   }, [currentLocation.key])
 
