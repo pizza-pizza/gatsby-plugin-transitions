@@ -1724,29 +1724,31 @@ var TransitionViews = function TransitionViews(_ref2) {
     if (to) gatsby.navigate(to);
   }, [to]);
   React.useEffect(function () {
-    var currentMode = currentLocation.mode || mode;
+    if (currentLocation.key) {
+      var currentMode = currentLocation.mode || mode;
 
-    if (currentMode === 'successive') {
-      if (views.filter(function (view) {
-        return view;
-      }).length) {
-        dispatch({
-          type: 'ADD_QUEUE',
-          view: children
-        });
-      } else {
+      if (currentMode === 'successive') {
+        if (views.filter(function (view) {
+          return view;
+        }).length) {
+          dispatch({
+            type: 'ADD_QUEUE',
+            view: children
+          });
+        } else {
+          dispatch({
+            type: 'ADD_VIEW_DIRECTLY',
+            view: children
+          });
+        }
+      }
+
+      if (currentMode === 'immediate') {
         dispatch({
           type: 'ADD_VIEW_DIRECTLY',
           view: children
         });
       }
-    }
-
-    if (currentMode === 'immediate') {
-      dispatch({
-        type: 'ADD_VIEW_DIRECTLY',
-        view: children
-      });
     }
   }, [currentLocation.key]);
   return React__default.createElement("div", {
