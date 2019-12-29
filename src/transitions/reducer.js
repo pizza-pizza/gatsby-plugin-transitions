@@ -1,14 +1,19 @@
 import validateSpring from './utils/validateSpring'
 
-function getY (key) {
+function getY(key) {
   const scroll = window.sessionStorage.getItem(`@@scroll|${key}`)
   const scrollArray = JSON.parse(scroll)
   if (!scrollArray) return 0
   return scrollArray[1]
 }
 
-function filterViews (views) {
-  return views.filter(view => view)
+function filterViews(views, currentView) {
+  return views.filter(
+    view =>
+      view &&
+      (!currentView ||
+        view.props.location.key !== currentView.props.location.key)
+  )
 }
 
 export default (state, action) => {
@@ -49,7 +54,10 @@ export default (state, action) => {
         },
         views: [null, ...filterViews(state.views)],
         keep: state.keepInterim
-          ? { ...state.views[0], y: state.currentLocation && getY(state.currentLocation.key) }
+          ? {
+              ...state.views[0],
+              y: state.currentLocation && getY(state.currentLocation.key)
+            }
           : state.keep,
         keepInterim: false,
         hasEntered: false
@@ -63,20 +71,21 @@ export default (state, action) => {
       return {
         ...state,
         views: state.views.filter(view => {
-          if (view && view.props.location.key === action.locationKey) return false
+          if (view && view.props.location.key === action.locationKey)
+            return false
           return true
         })
       }
     case 'ADD_VIEW_FROM_QUEUE':
       return {
         ...state,
-        views: [state.queue, ...filterViews(state.views)],
+        views: [state.queue, ...filterViews(state.views, state.queue)],
         queue: null
       }
     case 'ADD_VIEW_DIRECTLY':
       return {
         ...state,
-        views: [action.view, ...filterViews(state.views)],
+        views: [action.view, ...filterViews(state.views, action.view)],
         queue: null
       }
     case 'UPDATE_MODE':
@@ -94,6 +103,7 @@ export default (state, action) => {
         ...state,
         keep: null
       }
-    default: return state
+    default:
+      return state
   }
 }
