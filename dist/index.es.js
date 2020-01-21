@@ -1285,9 +1285,9 @@ function getY(key) {
   return scrollArray[1];
 }
 
-function filterViews(views) {
+function filterViews(views, currentView) {
   return views.filter(function (view) {
-    return view;
+    return view && (!currentView || view.props.location.key !== currentView.props.location.key);
   });
 }
 
@@ -1347,13 +1347,13 @@ var reducer = (function (state, action) {
 
     case 'ADD_VIEW_FROM_QUEUE':
       return _objectSpread({}, state, {
-        views: [state.queue].concat(_toConsumableArray(filterViews(state.views))),
+        views: [state.queue].concat(_toConsumableArray(filterViews(state.views, state.queue))),
         queue: null
       });
 
     case 'ADD_VIEW_DIRECTLY':
       return _objectSpread({}, state, {
-        views: [action.view].concat(_toConsumableArray(filterViews(state.views))),
+        views: [action.view].concat(_toConsumableArray(filterViews(state.views, action.view))),
         queue: null
       });
 
@@ -1747,7 +1747,7 @@ var TransitionViews = function TransitionViews(_ref2) {
   return React.createElement("div", {
     className: "views",
     style: style
-  }, views.map(function (view, index) {
+  }, typeof window === 'undefined' ? children : views.map(function (view, index) {
     if (!view) return null;
     var isKeep = keep && keep.props.location.pathname === view.props.location.pathname;
     return React.createElement(TransitionView, {
