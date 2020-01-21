@@ -5,8 +5,9 @@ import { navigate } from 'gatsby'
 import View from './view'
 import Keep from './keep'
 
-function getY ({ view, keep, currentLocation }) {
-  const isKeep = keep && keep.props.location.pathname === view.props.location.pathname
+function getY({ view, keep, currentLocation }) {
+  const isKeep =
+    keep && keep.props.location.pathname === view.props.location.pathname
   if (isKeep) return keep.y
   if (currentLocation && currentLocation.y) {
     return currentLocation.y
@@ -15,16 +16,10 @@ function getY ({ view, keep, currentLocation }) {
 }
 
 const TransitionViews = ({ children, style }) => {
-  const [{
-    enter,
-    usual,
-    leave,
-    to,
-    currentLocation,
-    views,
-    keep,
-    mode
-  }, dispatch] = useTransitionStore()
+  const [
+    { enter, usual, leave, to, currentLocation, views, keep, mode },
+    dispatch
+  ] = useTransitionStore()
 
   useEffect(() => {
     if (to) navigate(to)
@@ -46,18 +41,31 @@ const TransitionViews = ({ children, style }) => {
     }
   }, [currentLocation.key])
 
+  if (typeof window === 'undefined') {
+    return children
+  }
+
   return (
-    <div className='views' style={style}>
+    <div className="views" style={style}>
       {views.map((view, index) => {
         if (!view) return null
-        const isKeep = keep && keep.props.location.pathname === view.props.location.pathname
+        const isKeep =
+          keep && keep.props.location.pathname === view.props.location.pathname
         return (
           <View
             key={view.props.location.key}
             view={view}
             leave={currentLocation.leave || leave}
-            usual={(view.props.location.pathname === currentLocation.pathname && currentLocation.usual) || usual}
-            enter={(view.props.location.pathname === currentLocation.pathname && currentLocation.enter) || enter}
+            usual={
+              (view.props.location.pathname === currentLocation.pathname &&
+                currentLocation.usual) ||
+              usual
+            }
+            enter={
+              (view.props.location.pathname === currentLocation.pathname &&
+                currentLocation.enter) ||
+              enter
+            }
             mode={currentLocation.mode || mode}
             isKeep={isKeep}
             skipAnimations={currentLocation.skipAnimations}
@@ -68,12 +76,7 @@ const TransitionViews = ({ children, style }) => {
           />
         )
       })}
-      {keep && (
-        <Keep
-          key={keep.props.location.key}
-          view={keep}
-        />
-      )}
+      {keep && <Keep key={keep.props.location.key} view={keep} />}
     </div>
   )
 }
