@@ -41,41 +41,40 @@ const TransitionViews = ({ children, style }) => {
     }
   }, [currentLocation.key])
 
-  if (typeof window === 'undefined') {
-    return children
-  }
-
   return (
     <div className="views" style={style}>
-      {views.map((view, index) => {
-        if (!view) return null
-        const isKeep =
-          keep && keep.props.location.pathname === view.props.location.pathname
-        return (
-          <View
-            key={view.props.location.key}
-            view={view}
-            leave={currentLocation.leave || leave}
-            usual={
-              (view.props.location.pathname === currentLocation.pathname &&
-                currentLocation.usual) ||
-              usual
-            }
-            enter={
-              (view.props.location.pathname === currentLocation.pathname &&
-                currentLocation.enter) ||
-              enter
-            }
-            mode={currentLocation.mode || mode}
-            isKeep={isKeep}
-            skipAnimations={currentLocation.skipAnimations}
-            skipEnterAnimation={isKeep}
-            skipLeaveAnimation={isKeep}
-            y={getY({ keep, view, currentLocation })}
-            action={!index ? 'enter' : 'leave'}
-          />
-        )
-      })}
+      {typeof window === 'undefined'
+        ? children
+        : views.map((view, index) => {
+            if (!view) return null
+            const isKeep =
+              keep &&
+              keep.props.location.pathname === view.props.location.pathname
+            return (
+              <View
+                key={view.props.location.key}
+                view={view}
+                leave={currentLocation.leave || leave}
+                usual={
+                  (view.props.location.pathname === currentLocation.pathname &&
+                    currentLocation.usual) ||
+                  usual
+                }
+                enter={
+                  (view.props.location.pathname === currentLocation.pathname &&
+                    currentLocation.enter) ||
+                  enter
+                }
+                mode={currentLocation.mode || mode}
+                isKeep={isKeep}
+                skipAnimations={currentLocation.skipAnimations}
+                skipEnterAnimation={isKeep}
+                skipLeaveAnimation={isKeep}
+                y={getY({ keep, view, currentLocation })}
+                action={!index ? 'enter' : 'leave'}
+              />
+            )
+          })}
       {keep && <Keep key={keep.props.location.key} view={keep} />}
     </div>
   )
