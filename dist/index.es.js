@@ -1408,7 +1408,7 @@ var TransitionProvider = function TransitionProvider(props) {
       type: 'UPDATE_LOCATION',
       location: props.location
     });
-  }, [props.location.pathname]);
+  }, [props.location.pathname, props.location.search]);
   return React.createElement(TransitionContext.Provider, {
     value: [state, dispatch]
   }, props.children);

@@ -15,22 +15,22 @@ const TransitionProvider = (props) => {
     enter: validateSpring(props.enter),
     usual: validateSpring(props.usual),
     leave: validateSpring(props.leave),
-    hasEntered: false
+    hasEntered: false,
   })
 
   useEffect(() => {
     dispatch({
       type: 'UPDATE_MODE',
-      mode: props.mode
+      mode: props.mode,
     })
   }, [props.mode])
 
   useEffect(() => {
     dispatch({
       type: 'UPDATE_LOCATION',
-      location: props.location
+      location: props.location,
     })
-  }, [props.location.pathname])
+  }, [props.location.pathname, props.location.search])
 
   return (
     <TransitionContext.Provider value={[state, dispatch]}>
@@ -46,7 +46,7 @@ TransitionProvider.propTypes = {
   enter: propTypes.object,
   usual: propTypes.object,
   leave: propTypes.object,
-  style: propTypes.object
+  style: propTypes.object,
 }
 
 TransitionProvider.defaultProps = {
@@ -56,7 +56,7 @@ TransitionProvider.defaultProps = {
   enter: { opacity: 0, config: 'stiff' },
   usual: { opacity: 1, config: 'stiff' },
   leave: { opacity: 0, config: 'stiff' },
-  style: null
+  style: null,
 }
 
 export { TransitionProvider }
